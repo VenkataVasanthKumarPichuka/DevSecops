@@ -1,7 +1,5 @@
 name: CI/CD Pipeline
-permissions:
-  contents: write
-  packages: write
+
 on:
   push:
     branches: [ main ]
@@ -81,8 +79,7 @@ jobs:
     needs: [build]
     env:
       REGISTRY: ghcr.io
-      # IMAGE_NAME: ${{ github.repository }}
-IMAGE_NAME: venkatavasanthkumarpichuka/devsecops
+      IMAGE_NAME: ${{ github.repository }}
     outputs:
       image_tag: ${{ steps.set_output.outputs.image_tag }}
     steps:
@@ -103,8 +100,7 @@ IMAGE_NAME: venkatavasanthkumarpichuka/devsecops
         with:
           registry: ${{ env.REGISTRY }}
           username: ${{ github.actor }}
-          # password: ${{ secrets.TOKEN }}
-password: ${{ secrets.GHCR_TOKEN }}
+          password: ${{ secrets.TOKEN }}
       
       - name: Extract metadata for Docker
         id: meta
@@ -156,8 +152,7 @@ password: ${{ secrets.GHCR_TOKEN }}
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          # token: ${{ secrets.TOKEN }}
-token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.TOKEN }}
       
       - name: Setup Git config
         run: |
@@ -185,4 +180,3 @@ token: ${{ secrets.GITHUB_TOKEN }}
           git add kubernetes/deployment.yaml
           git commit -m "Update Kubernetes deployment with new image tag: ${{ needs.docker.outputs.image_tag }} [skip ci]" || echo "No changes to commit"
           git push
-
